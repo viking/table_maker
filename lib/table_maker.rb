@@ -19,7 +19,7 @@ class TableMaker
         line.strip!
         next  if line =~ /^[-+|=]*$/
 
-        parts = line.split(/\s*\|\s*/)
+        parts = line.split(/\|/).collect { |s| s.strip!; s == "" ? nil : s }
         parts.shift
 
         if @column_info.empty?
