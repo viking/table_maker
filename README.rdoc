@@ -1,6 +1,23 @@
 = table_maker
 
-Description goes here.
+Simple ASCII table importer for Sequel.
+
+Example use:
+  require 'sequel'
+  require 'table_maker'
+
+  db = Sequel.sqlite
+  TableMaker.new(db, :foo, <<-EOF)
+    +-------------+-------------+--------------+
+    | foo(String) | bar(String) | baz(Integer) |
+    +=============+=============+==============+
+    | abc         | def         | 123          |
+    | ghi         | jkl         | 456          |
+    | mno         | pqr         | 789          |
+    | stu         | vwx         | 000          |
+    +-------------+-------------+--------------+
+  EOF
+  db[:foo].all #=> [{:id=>1, :foo=>"abc", :bar=>"def", :baz=>123}, ...]
 
 == Contributing to table_maker
  

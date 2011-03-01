@@ -15,9 +15,9 @@ Jeweler::Tasks.new do |gem|
   gem.name = "table_maker"
   gem.homepage = "http://github.com/viking/table_maker"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "viking415@gmail.com"
+  gem.summary = %Q{Simple ASCII table importer for Sequel}
+  gem.description = %Q{Simple ASCII table importer for Sequel}
+  gem.email = "viking@pillageandplunder.net"
   gem.authors = ["Jeremy Stephens"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
