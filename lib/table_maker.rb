@@ -7,6 +7,7 @@ class TableMaker
     @column_info = []
     @column_names = []
     @data = []
+    @has_primary_key = false
     parse_layout(layout)
     create_table
     import_data
@@ -27,7 +28,12 @@ class TableMaker
             md = str.match(/(\w+)\((\w+)\)/)
             name = md[1].to_sym
             type = Object.module_eval("::#{md[2]}", __FILE__, __LINE__)
-            @column_info << { :name => name, :type => type }
+            opts = { :name => name, :type => type }
+            if name == :id
+              opts[:primary_key] = true
+              @has_primary_key = true
+            end
+            @column_info << opts
             @column_names << name
           end
         else
@@ -38,8 +44,11 @@ class TableMaker
 
     def create_table
       column_info = @column_info
+      has_primary_key = @has_primary_key
       @db.create_table(@table_name) do
-        primary_key :id
+        if !has_primary_key
+          primary_key :id
+        end
         @columns = column_info
       end
     end

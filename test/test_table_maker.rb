@@ -29,7 +29,7 @@ class TestTableMaker < Test::Unit::TestCase
     assert_equal expected, ds.select(:id, :foo, :bar, :baz).order(:id).all
   end
 
-  def test_manually_specified_id
+  def test_manually_specified_integer_id
     db = Sequel.connect("#{RUBY_PLATFORM == 'java' ? "jdbc:" : ""}sqlite::memory:")
     TableMaker.new(db, :foo, <<-EOF)
       +-------------+-------------+-------------+--------------+
@@ -49,6 +49,30 @@ class TestTableMaker < Test::Unit::TestCase
       {:id => 73, :foo => 'mno', :bar => 'pqr', :baz => 789}
     ]
     assert_equal expected, ds.select(:id, :foo, :bar, :baz).order(:id).all
+    assert db.schema(:foo).assoc(:id)[1][:primary_key]
+  end
+
+  def test_manually_specified_string_id
+    db = Sequel.connect("#{RUBY_PLATFORM == 'java' ? "jdbc:" : ""}sqlite::memory:")
+    TableMaker.new(db, :foo, <<-EOF)
+      +------------+-------------+-------------+--------------+
+      | id(String) | foo(String) | bar(String) | baz(Integer) |
+      +============+=============+=============+==============+
+      | abc        | abc         | def         | 123          |
+      | 123        | ghi         | jkl         | 456          |
+      | do re      | mno         | pqr         | 789          |
+      | mi         | stu         | vwx         | 000          |
+      +-------------+-------------+-------------+--------------+
+    EOF
+    ds = db[:foo]
+    expected = [
+      {:id => '123',   :foo => 'ghi', :bar => 'jkl', :baz => 456},
+      {:id => 'abc',   :foo => 'abc', :bar => 'def', :baz => 123},
+      {:id => 'do re', :foo => 'mno', :bar => 'pqr', :baz => 789},
+      {:id => 'mi',    :foo => 'stu', :bar => 'vwx', :baz => 000}
+    ]
+    assert_equal expected, ds.select(:id, :foo, :bar, :baz).order(:id).all
+    assert db.schema(:foo).assoc(:id)[1][:primary_key]
   end
 
   def test_blank_cells_are_null
